@@ -152,13 +152,13 @@ jobs:
 
       - name: Test run
         working-directory: ${{runner.workspace}}/build
-        run: dir ${{runner.workspace}}\build\Release
+        run: dir ${{runner.workspace}}\build\Release\cpp_command_output.exe
 
       - name: Upload cpp_command_output Binary
         uses: actions/upload-artifact@v1
         with:
           name: cpp_command_output-windows-x86-msvc-${{ env.BUILD_DATE }}.exe
-          path: ${{runner.workspace}}\build\cpp_command_output.exe
+          path: ${{runner.workspace}}\build\Release\cpp_command_output.exe
         env:
           BUILD_DATE: ${{ steps.date.outputs.date }}
 #
