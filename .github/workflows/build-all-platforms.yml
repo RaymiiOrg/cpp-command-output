@@ -152,7 +152,7 @@ jobs:
 
       - name: Test run
         working-directory: ${{runner.workspace}}/build
-        run: dir ${{runner.workspace}}\cpp-command-output\
+        run: dir ${{runner.workspace}}\build\
 
       - name: Upload cpp_command_output Binary
         uses: actions/upload-artifact@v1
