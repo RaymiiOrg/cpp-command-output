@@ -54,10 +54,11 @@ namespace raymii {
             std::array<char, 4> buffer{};
             std::string result;
 #ifdef _WIN32
-            FILE *pipe = _popen(command.c_str(), "r");
-#else
-            FILE *pipe = popen(command.c_str(), "r");
+#define popen _popen
+#define pclose _pclose
+#define WEXITSTATUS
 #endif
+            FILE *pipe = popen(command.c_str(), "r");
             if (pipe == nullptr) {
                 throw std::runtime_error("popen() failed!");
             }
@@ -80,10 +81,11 @@ namespace raymii {
             std::array<char, 4> buffer{};
             std::string result;
 #ifdef _WIN32
-            FILE *pipe = _popen(command.c_str(), "r");
-#else
-            FILE *pipe = popen(command.c_str(), "r");
+#define popen _popen
+#define pclose _pclose
+#define WEXITSTATUS
 #endif
+            FILE *pipe = popen(command.c_str(), "r");
             if (pipe == nullptr) {
                 throw std::runtime_error("popen() failed!");
             }
