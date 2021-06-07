@@ -93,6 +93,9 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H%M')"
 
+      - name: Install build dependencies
+        run: sudo apt -y update && sudo apt -y install qemu-user-binfmt qemu-user g++-multilib-arm-linux-gnueabihf gcc-arm-linux-gnueabihf
+
       - name: Create build environment
         run: cmake -E make_directory ${{runner.workspace}}/build
 
