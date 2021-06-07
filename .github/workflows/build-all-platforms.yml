@@ -1,0 +1,200 @@
+name: Build, run test and upload binaries
+
+on: [push, pull_request]
+
+jobs:
+
+  linux-x86-clang:
+    runs-on: "ubuntu-20.04"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H%M')"
+
+      - name: Create build environment
+        run: cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: cmake $GITHUB_WORKSPACE -DBUILD_TESTS="yes" -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-Wall"
+
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: cmake --build . --config Release --target all
+        env:
+          MAKEFLAGS: "-j2"
+
+      - name: Binary info
+        run: file ${{runner.workspace}}/build/cpp_command_output
+
+      - name: Run binary
+        run: ${{runner.workspace}}/build/cpp_command_output
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v1
+        with:
+          name: cpp_command_output-linux-x86-clang-${{ env.BUILD_DATE }}
+          path: ${{runner.workspace}}/build/cpp_command_output
+        env:
+          BUILD_DATE: ${{ steps.date.outputs.date }}
+
+  linux-x86-gcc:
+    runs-on: "ubuntu-20.04"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H%M')"
+
+      - name: Create build environment
+        run: cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS="yes" -DCMAKE_CXX_FLAGS="-Wall"
+
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: cmake --build . --config Release --target all
+        env:
+          MAKEFLAGS: "-j2"
+
+      - name: Binary info
+        run: file ${{runner.workspace}}/build/cpp_command_output
+
+      - name: Run
+        run: ${{runner.workspace}}/build/cpp_command_output
+
+      - name: Upload cpp_command_output binary
+        uses: actions/upload-artifact@v1
+        with:
+          name: cpp_command_output-linux-x86-gcc-${{ env.BUILD_DATE }}
+          path: ${{runner.workspace}}/build/cpp_command_output
+        env:
+          BUILD_DATE: ${{ steps.date.outputs.date }}
+
+  linux-arm-gcc-crosscompile:
+    runs-on: "ubuntu-20.04"
+#    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H%M')"
+
+      - name: Create build environment
+        run: cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=Release -DSTATIC_COMPILE="yes" -DCMAKE_CXX_FLAGS="-Wall" -DCMAKE_C_COMPILER="arm-linux-gnueabihf-gcc-9" -DCMAKE_CXX_COMPILER="arm-linux-gnueabihf-g++-9" -DCMAKE_CXX_FLAGS="-O3 -march=armv7ve"
+
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: cmake --build . --config Release --target all
+        env:
+          MAKEFLAGS: "-j2"
+
+      - name: Binary info
+        run: file ${{runner.workspace}}/build/cpp_command_output
+
+      - name: test run
+        run: echo q |  ${{runner.workspace}}/build/cpp_command_output
+
+      - name: Upload cpp_command_output binary
+        uses: actions/upload-artifact@v1
+        with:
+          name: cpp_command_output-linux-ARM-gcc-${{ env.BUILD_DATE }}
+          path: ${{runner.workspace}}/build/cpp_command_output
+        env:
+          BUILD_DATE: ${{ steps.date.outputs.date }}
+
+  windows-x86-msvc:
+    runs-on: windows-2019
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H%M')"
+
+      - name: Create build environment
+        run: cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: cmake --build . --config Release
+        env:
+          MAKEFLAGS: "-j2"
+
+      - name: Test run
+        working-directory: ${{runner.workspace}}/build
+        run: echo q | ${{runner.workspace}}\build\cpp_command_output.exe
+
+      - name: Upload cpp_command_output Binary
+        uses: actions/upload-artifact@v1
+        with:
+          name: cpp_command_output-windows-x86-msvc-${{ env.BUILD_DATE }}.exe
+          path: ${{runner.workspace}}\build\cpp_command_output.exe
+        env:
+          BUILD_DATE: ${{ steps.date.outputs.date }}
+#
+  osx-x86-appleclang:
+    runs-on: "macos-10.15"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H%M')"
+
+      - name: Create build environment
+        run: cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS="yes" -DCMAKE_CXX_FLAGS="-Wall -std=c++17 -stdlib=libc++" -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++"
+
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: cmake --build . --config Release --target all
+        env:
+          MAKEFLAGS: "-j2"
+
+      - name: Binary info
+        run: file ${{runner.workspace}}/build/cpp_command_output
+
+      - name: Run Binary
+        run: ${{runner.workspace}}/build/cpp_command_output
+
+      - name: Upload cpp_command_output Binary
+        uses: actions/upload-artifact@v1
+        with:
+          name: cpp_command_output-osx-x86-10.15-appleclang-${{ env.BUILD_DATE }}
+          path: ${{runner.workspace}}/build/cpp_command_output
+        env:
+          BUILD_DATE: ${{ steps.date.outputs.date }}
+#
+
