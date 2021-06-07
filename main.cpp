@@ -18,6 +18,9 @@
 int main() {
     using namespace raymii;
 
+    std::cout << "Example:" << std::endl;
+    std::cout << Command::exec("echo 'Hello you absolute legends!'") << std::endl;
+
     std::string expectedOutput("test\000abc\n", 9); //NOLINT We want to test for nullbytes...
     CommandResult nullbyteCommand = Command::exec("/usr/bin/printf 'test\\000abc\\n'"); // NOLINT(bugprone-string-literal-with-embedded-nul)
     CommandResult fgetsNullbyteCommand = Command::execFgets("/usr/bin/printf 'test\\000abc\\n'"); // NOLINT(bugprone-string-literal-with-embedded-nul)
