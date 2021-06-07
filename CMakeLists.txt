@@ -3,12 +3,14 @@ project(cpp_command_output)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# Fix segfault when statically compiling.
-# https://stackoverflow.com/questions/35116327/when-g-static-link-pthread-cause-segmentation-fault-why
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -lrt -pthread -Wl,--whole-archive -lpthread -Wl,--no-whole-archive")
-SET(CMAKE_EXE_LINKER_FLAGS "-static")
-SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-SET(BUILD_SHARED_LIBS OFF)
+if (STATIC_COMPILE STREQUAL "yes")
+    # Fix segfault when statically compiling.
+    # https://stackoverflow.com/questions/35116327/when-g-static-link-pthread-cause-segmentation-fault-why
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -lrt -pthread -Wl,--whole-archive -lpthread -Wl,--no-whole-archive")
+    SET(CMAKE_EXE_LINKER_FLAGS "-static")
+    SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+    SET(BUILD_SHARED_LIBS OFF)
+endif()
 
 if (NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio")
     message(STATUS "CMake generator is NOT Visual Studio. Using regular build flags")
