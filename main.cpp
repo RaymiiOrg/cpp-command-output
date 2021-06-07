@@ -30,8 +30,8 @@ int main() {
     std::cout << "Output using fread:  " << nullbyteCommand << std::endl;
     std::cout << "Output using fgets: " << fgetsNullbyteCommand << std::endl;
 
-    std::cout << "Redirect stdout to stderr" << std::endl;
-    std::cout << Command::exec("/bin/bash --invalid  1>&2") << std::endl;
+    std::cout << "Redirect stderr to stdout" << std::endl;
+    std::cout << Command::exec("/bin/bash --invalid  2>&1") << std::endl;
 
 #ifdef _WIN32
     std::cout << "Windows example:" << std::endl;
