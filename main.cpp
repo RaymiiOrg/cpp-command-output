@@ -19,7 +19,6 @@ int main() {
     using namespace raymii;
 
 #ifndef _WIN32
-
     std::cout << "Example:" << std::endl;
     std::cout << Command::exec("echo 'Hello you absolute legends!'") << std::endl;
 
@@ -39,13 +38,22 @@ int main() {
 
 
 #else
-    std::cout << "Windows Example:" << std::endl;
+    std::cout << "Windows Echo:" << std::endl;
     std::cout << Command::exec("echo 'Hello you absolute legends!'") << std::endl;
 
-    std::cout << "Windows example:" << std::endl;
-    std::cout << Command::exec("dir * /on /p") << std::endl;
+    std::cout << "Windows Dir:" << std::endl;
+    std::cout << Command::exec("cmd /r dir * /on /p") << std::endl;
 
-    std::cout << "Windows Example:" << std::endl;
+    std::cout << "Windows Version:" << std::endl;
+    std::cout << Command::exec("cmd /r ver") << std::endl;
+
+    std::cout << "Windows Version WMI:" << std::endl;
+    std::cout << Command::exec("cmd /r wmic os get version") << std::endl;
+
+    std::cout << "Windows Explorer:" << std::endl;
+    std::cout << Command::exec("explorer") << std::endl;
+
+    std::cout << "Windows Echo:" << std::endl;
     std::cout << Command::exec("echo 'Goodbye!'") << std::endl;
 
 #endif

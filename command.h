@@ -49,7 +49,7 @@ namespace raymii {
              */
         static CommandResult exec(const std::string &command) {
             int exitcode = 0;
-            std::array<char, 1048576> buffer{};
+            std::array<char, 8192> buffer{};
             std::string result;
 #ifdef _WIN32
 #define popen _popen
@@ -76,7 +76,7 @@ namespace raymii {
         // Only for reference in the article. Use regular ::exec.
         static CommandResult execFgets(const std::string &command) {
             int exitcode = 0;
-            std::array<char, 1048576> buffer{};
+            std::array<char, 8192> buffer{};
             std::string result;
 #ifdef _WIN32
 #define popen _popen
