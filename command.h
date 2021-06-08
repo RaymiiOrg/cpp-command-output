@@ -17,9 +17,7 @@
 #include <array>
 #include <ostream>
 #include <string>
-#ifdef _WIN32
-#include <stdio.h>
-#endif
+#include <cstdio>
 
 namespace raymii {
 
@@ -50,7 +48,7 @@ namespace raymii {
              * use shell redirection (2&>1).
              */
         static CommandResult exec(const std::string &command) {
-            int exitcode = 255;
+            int exitcode = 0;
             std::array<char, 1048576> buffer{};
             std::string result;
 #ifdef _WIN32
@@ -77,7 +75,7 @@ namespace raymii {
 
         // Only for reference in the article. Use regular ::exec.
         static CommandResult execFgets(const std::string &command) {
-            int exitcode = 255;
+            int exitcode = 0;
             std::array<char, 1048576> buffer{};
             std::string result;
 #ifdef _WIN32

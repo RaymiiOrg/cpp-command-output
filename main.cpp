@@ -18,9 +18,16 @@
 int main() {
     using namespace raymii;
 
+#ifndef _WIN32
+
     std::cout << "Example:" << std::endl;
     std::cout << Command::exec("echo 'Hello you absolute legends!'") << std::endl;
 
+    std::cout << "Redirect stderr to stdout" << std::endl;
+    std::cout << Command::exec("/bin/bash --invalid  2>&1") << std::endl;
+
+    std::cout << "Exit status from false:" << std::endl;
+    std::cout << Command::exec("false") << std::endl;
 
     std::string expectedOutput("test\000abc\n", 9); //NOLINT We want to test for nullbytes...
     CommandResult nullbyteCommand = Command::exec("/usr/bin/printf 'test\\000abc\\n'"); // NOLINT(bugprone-string-literal-with-embedded-nul)
@@ -30,12 +37,17 @@ int main() {
     std::cout << "Output using fread:  " << nullbyteCommand << std::endl;
     std::cout << "Output using fgets: " << fgetsNullbyteCommand << std::endl;
 
-    std::cout << "Redirect stderr to stdout" << std::endl;
-    std::cout << Command::exec("/bin/bash --invalid  2>&1") << std::endl;
 
-#ifdef _WIN32
+#else
+    std::cout << "Windows Example:" << std::endl;
+    std::cout << Command::exec("echo 'Hello you absolute legends!'") << std::endl;
+
     std::cout << "Windows example:" << std::endl;
     std::cout << Command::exec("dir * /on /p") << std::endl;
+
+    std::cout << "Windows Example:" << std::endl;
+    std::cout << Command::exec("echo 'Goodbye!'") << std::endl;
+
 #endif
 
     return 0;
