@@ -69,7 +69,10 @@ namespace raymii {
                 pclose(pipe);
                 throw;
             }
-            exitcode = WEXITSTATUS(pclose(pipe));
+            // Workaround "error: cannot take the address of an rvalue of type 'int'" on MacOS
+            // see e.g. https://github.com/BestImageViewer/geeqie/commit/75c7df8b96592e10f7936dc1a28983be4089578c
+            int res = pclose(pipe);
+            exitcode = WEXITSTATUS(res);
             return CommandResult{result, exitcode};
         }
 
@@ -95,7 +98,10 @@ namespace raymii {
                 pclose(pipe);
                 throw;
             }
-            exitcode = WEXITSTATUS(pclose(pipe));
+            // Workaround "error: cannot take the address of an rvalue of type 'int'" on MacOS
+            // see e.g. https://github.com/BestImageViewer/geeqie/commit/75c7df8b96592e10f7936dc1a28983be4089578c
+            int res = pclose(pipe);
+            exitcode = WEXITSTATUS(res);
             return CommandResult{result, exitcode};
         }
     };
